@@ -5,8 +5,8 @@ import * as helmet from "helmet";
 import * as morgan from "morgan";
 import * as expressRequestIdGenerator from "express-request-id";
 import * as rateLimit from "express-rate-limit";
-
 import { createConnection, QueryFailedError } from "typeorm";
+
 import { logger, stream } from "./utils/Logger";
 import { DB_DUPLICATE_ENTRY, DB_MISSING_FIELDS } from "./utils/Constants";
 import hooksRouter from "./routes/HooksRoutes";
@@ -21,12 +21,12 @@ class App {
 		this.app = express();
 		this.config();
 		this.configureExternalServices();
-		this.configRoutes();
 		this.configDatabaseError();
 		this.configGlobalErrors();
+		this.configRoutes();
 	}
 
-	private config(): void {
+	private config() {
 		this.app.set("env", process.env.NODE_ENV || "development");
 		this.app.set("port", Number.parseInt(process.env.NODE_PORT) || 8080);
 		this.app.use(compression());

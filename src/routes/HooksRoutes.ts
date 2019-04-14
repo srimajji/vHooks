@@ -4,6 +4,7 @@ import { Hook } from "../models/Hook";
 import { ResourceNotFoundError } from "../utils/Errors";
 import { wrapAsync } from "../utils/Helpers";
 import { logger } from "../utils/Logger";
+import events from "../services/EventService";
 
 const hooksRouter = express.Router();
 
@@ -35,6 +36,8 @@ hooksRouter.all(
 			next(error);
 			return;
 		});
+
+		events.emit("newHookRequest", hook.id, hookRequest);
 
 		logger.info("Created a new hookRequest", { hook, hookRequest });
 		return res.json(hookRequest);

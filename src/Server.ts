@@ -3,21 +3,26 @@ import app from "./App";
 import * as http from "http";
 import { Socket } from "socket.io";
 import { logger } from "./utils/Logger";
+import events from "./services/EventService";
 
 export const server = http.createServer(app);
 const io = require("socket.io")(server);
 
 io.on("connection", (socket: Socket) => {
 	logger.info("Websocket connection established", { id: socket.id });
-	socket.emit("news", { hello: "world" });
-	socket.on("my other event", function (data) {
-		logger.info("event received", data);
+	events.on("newHookRequest", (id, hookRequest) => {
+		socket.emit("events", hookRequest);
+	});
+
+	socket.on("disconnect", () => {
+		logger.info("Websocker connection disconnected", { id: socket.id });
 	});
 });
 
 export const gracefullyShutdown = () => {
 	server.close(() => {
 		// gracefully shutdown third party services;
+		events.removeAllListeners();
 		app.get("mysql").close();
 		logger.info("Server shutting down");
 		process.exit();
