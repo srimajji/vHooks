@@ -1,0 +1,28 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Debug: start",
+			"program": "${workspaceFolder}/dist/Server.js",
+			"env": {
+				"NODE_ENV": "development"
+			},
+			"preLaunchTask": "build",
+			"args": ["|", "${workspaceFolder}/node_modules/.bin/bunyan"],
+			"console": "externalTerminal"
+		},
+		{
+			"type": "node",
+			"request": "attach",
+			"name": "Debug: start:dev",
+			"processId": "${command:PickProcess}",
+			"restart": true,
+			"protocol": "inspector"
+		}
+	]
+}
