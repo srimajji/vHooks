@@ -1,11 +1,19 @@
 import "reflect-metadata";
 import app from "./App";
-
 import * as http from "http";
-
+import { Socket } from "socket.io";
 import { logger } from "./utils/Logger";
 
 export const server = http.createServer(app);
+const io = require("socket.io")(server);
+
+io.on("connection", (socket: Socket) => {
+	logger.info("Websocket connection established", { id: socket.id });
+	socket.emit("news", { hello: "world" });
+	socket.on("my other event", function (data) {
+		logger.info("event received", data);
+	});
+});
 
 export const gracefullyShutdown = () => {
 	server.close(() => {

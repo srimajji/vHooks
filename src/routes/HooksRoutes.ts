@@ -70,7 +70,7 @@ hooksRouter.post(
 		});
 
 		logger.info("Create a new hook", { hook });
-		res.json({ hook });
+		res.json({ ...hook });
 	})
 );
 
