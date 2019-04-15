@@ -10,9 +10,10 @@
 	},
 	"scripts": {
 		"clean": "rm -rf dist",
-		"start": "yarn run build && node --inspect dist/Server.js",
+		"start": "yarn run build:express && yarn run build:next && node --inspect dist/Server.js",
 		"start:dev": "concurrently \"tsc -w\" \"nodemon --inspect dist/Server.js | bunyan\"",
-		"build": "tsc --p tsconfig.json",
+		"build:express": "tsc --p tsconfig.json",
+		"build:next": "next build",
 		"typeorm": "yarn run clean && yarn run build && dotenv-extended typeorm"
 	},
 	"prettier": {
@@ -68,10 +69,14 @@
 		"helmet": "^3.16.0",
 		"morgan": "^1.9.1",
 		"mysql": "^2.16.0",
+		"next": "^8.0.4",
+		"react": "^16.8.6",
+		"react-dom": "^16.8.6",
 		"reflect-metadata": "^0.1.13",
 		"socket.io": "^2.2.0",
 		"typeorm": "^0.2.16",
-		"typescript": "^3.4.3"
+		"typescript": "^3.4.3",
+		"@zeit/next-typescript": "^1.1.1"
 	},
 	"devDependencies": {
 		"@types/body-parser": "^1.17.0",
@@ -83,7 +88,10 @@
 		"@types/helmet": "^0.0.43",
 		"@types/jest": "^24.0.11",
 		"@types/morgan": "^1.7.35",
+		"@types/next": "^8.0.3",
 		"@types/node": "^11.13.4",
+		"@types/react": "^16.8.13",
+		"@types/react-dom": "^16.8.4",
 		"@types/socket.io": "^2.1.2",
 		"concurrently": "^4.1.0",
 		"nodemon": "^1.18.11",

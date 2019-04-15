@@ -1,7 +1,14 @@
 {
 	"compilerOptions": {
-		"paths": { "*": ["types/*"] },
-		"lib": ["es2017", "dom"],
+		"paths": {
+			"*": [
+				"types/*"
+			]
+		},
+		"lib": [
+			"es2017",
+			"dom"
+		],
 		"allowSyntheticDefaultImports": true,
 		"allowJs": true,
 		/* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', or 'ESNEXT'. */
@@ -13,8 +20,13 @@
 		/* Redirect output structure to the directory. */
 		"outDir": "dist",
 		"baseUrl": ".",
-		"typeRoots": ["types"],
-		"types": ["node", "jest"],
+		"typeRoots": [
+			"types"
+		],
+		"types": [
+			"node",
+			"jest"
+		],
 		/* Do not emit comments to output. */
 		"removeComments": true,
 		/* Enable all strict type-checking options. */
@@ -28,9 +40,17 @@
 		/* Enables experimental support for ES7 decorators. */
 		"experimentalDecorators": true,
 		/* Enables experimental support for emitting type metadata for decorators. */
-		"emitDecoratorMetadata": true
+		"emitDecoratorMetadata": true,
+		"jsx": "preserve"
 	},
 	"compileOnSave": true,
-	"include": ["src/**/*"],
-	"exclude": ["node_modules", "dist", "src/tests/**/*"]
+	"include": [
+		"src/**/*",
+		"pages"
+	],
+	"exclude": [
+		"node_modules",
+		"dist",
+		"src/tests/**/*"
+	]
 }
