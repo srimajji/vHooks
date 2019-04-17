@@ -11,7 +11,7 @@ export class Hook extends BaseEntity {
 	@Index("idx_permalink")
 	permalink: string;
 
-	@OneToMany(type => HookRequest, hookRequest => hookRequest.hook, { eager: true })
+	@OneToMany(type => HookRequest, hookRequest => hookRequest.hook)
 	hookRequests: HookRequest[];
 
 	@BeforeInsert()

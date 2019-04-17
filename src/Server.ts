@@ -4,20 +4,29 @@ import * as http from "http";
 import { Socket } from "socket.io";
 import { logger } from "./utils/Logger";
 import events from "./services/EventService";
-import next from "next";
+import { Hook } from "./models/Hook";
+const next = require("next");
 
-const dev = process.env.NODE_ENV !== "production";
+const dev = true || process.env.NODE_ENV !== "production";
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
 nextApp.prepare()
 	.then(() => {
-		app.get("*", (req, res) => {
-			return handle(req, res);
+
+		// Client side routing
+		app.get("/hook/:permalink", async (req, res) => {
+			const { permalink } = req.params;
+			const hook = await Hook.findOne({ permalink }, { relations: ["hookRequests"] });
+			if (!hook) {
+				res.statusCode = 404;
+				return nextApp.render(req, res, "/_error", { ...req.query });
+			}
+			return nextApp.render(req, res, "/Hook", { hook });
 		});
 
-		app.get("/test", (req, res) => {
-			return nextApp.render(req, res, "/index", req.query);
+		app.get("*", (req, res) => {
+			return handle(req, res);
 		});
 
 		const server = http.createServer(app);
@@ -26,7 +35,7 @@ nextApp.prepare()
 		io.on("connection", (socket: Socket) => {
 			logger.info("Websocket connection established", { id: socket.id });
 			events.on("newHookRequest", (id, hookRequest) => {
-				socket.emit("events", hookRequest);
+				socket.emit("newHookRequest", hookRequest);
 			});
 
 			socket.on("disconnect", () => {
@@ -56,7 +65,7 @@ nextApp.prepare()
 			logger.info(`App is running at http://localhost:${port}`);
 			logger.info("Press CTRL-C to stop");
 		});
-	}).catch((ex) => {
+	}).catch((ex: any) => {
 		logger.error(ex.stack);
 		process.exit(1);
 	});

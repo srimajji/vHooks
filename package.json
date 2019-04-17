@@ -10,8 +10,8 @@
 	},
 	"scripts": {
 		"clean": "rm -rf dist",
-		"start": "yarn run build:express && yarn run build:next && node --inspect dist/Server.js",
-		"start:dev": "concurrently \"tsc -w\" \"nodemon --inspect dist/Server.js | bunyan\"",
+		"start": "yarn clean && yarn build:express && yarn build:next && node --inspect dist/Server.js",
+		"start:dev": "concurrently \"yarn build:express\" \"yarn build:next\" \"nodemon --inspect dist/Server.js | bunyan\"",
 		"build:express": "tsc --p tsconfig.json",
 		"build:next": "next build",
 		"typeorm": "yarn run clean && yarn run build && dotenv-extended typeorm"
@@ -58,6 +58,8 @@
 		"ext": "ts json"
 	},
 	"dependencies": {
+		"@zeit/next-typescript": "^1.1.1",
+		"axios": "^0.18.0",
 		"body-parser": "^1.18.3",
 		"bunyan": "^1.8.12",
 		"casual": "^1.6.0",
@@ -75,8 +77,7 @@
 		"reflect-metadata": "^0.1.13",
 		"socket.io": "^2.2.0",
 		"typeorm": "^0.2.16",
-		"typescript": "^3.4.3",
-		"@zeit/next-typescript": "^1.1.1"
+		"typescript": "^3.4.3"
 	},
 	"devDependencies": {
 		"@types/body-parser": "^1.17.0",

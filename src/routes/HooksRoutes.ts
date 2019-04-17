@@ -8,12 +8,50 @@ import events from "../services/EventService";
 
 const hooksRouter = express.Router();
 
-hooksRouter.all(
+hooksRouter.get(
 	"/:permalink",
+	wrapAsync(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+		const { permalink } = req.params;
+		const hook = await Hook.findOne({ permalink }, { relations: ["hookRequests"] });
+		if (!hook) {
+			const error = new ResourceNotFoundError("Hook not found");
+			next(error);
+			return;
+		}
+
+		res.json({ hook });
+	})
+);
+
+hooksRouter.get("/all", wrapAsync(async (req: express.Request, res: express.Response) => {
+	const hooks: Hook[] = await Hook.find();
+	res.json(hooks);
+}));
+
+hooksRouter.post(
+	"/",
+	wrapAsync(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+		const hook = new Hook();
+		hook.permalink = req.body.name;
+		await hook.save().catch(e => {
+			const errorMsg = "Error saving hook";
+			const error = new Error(errorMsg);
+			logger.error(errorMsg, { hook, e });
+			next(error);
+			return;
+		});
+
+		logger.info("Create a new hook", { hook });
+		res.json({ ...hook });
+	})
+);
+
+hooksRouter.all(
+	"/new/:permalink",
 	wrapAsync(async (req: any, res: express.Response, next: express.NextFunction) => {
 		const hook = await Hook.findOne({ permalink: req.params.permalink });
 		if (!hook) {
-			const error = new ResourceNotFoundError("Hook not found");
+			const error = new Error("Hook not found");
 			next(error);
 			return;
 		}
@@ -41,39 +79,6 @@ hooksRouter.all(
 
 		logger.info("Created a new hookRequest", { hook, hookRequest });
 		return res.json(hookRequest);
-	})
-);
-
-hooksRouter.get(
-	"/p/:permalink",
-	wrapAsync(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-		const { permalink } = req.params;
-		const hook = await Hook.findOne({ permalink });
-		if (!hook) {
-			const error = new ResourceNotFoundError("Hook not found");
-			next(error);
-			return;
-		}
-
-		res.json({ hook });
-	})
-);
-
-hooksRouter.post(
-	"/",
-	wrapAsync(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-		const hook = new Hook();
-		hook.permalink = req.body.name;
-		await hook.save().catch(e => {
-			const errorMsg = "Error saving hook";
-			const error = new Error(errorMsg);
-			logger.error(errorMsg, { hook, e });
-			next(error);
-			return;
-		});
-
-		logger.info("Create a new hook", { hook });
-		res.json({ ...hook });
 	})
 );
 

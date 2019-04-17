@@ -46,11 +46,11 @@
 	"compileOnSave": true,
 	"include": [
 		"src/**/*",
-		"pages"
 	],
 	"exclude": [
 		"node_modules",
 		"dist",
-		"src/tests/**/*"
+		"src/tests/**/*",
+		"pages"
 	]
 }

@@ -38,7 +38,7 @@ class App {
 		this.app.use(
 			rateLimit({
 				windowMs: 5 * 60 * 1000, // 15 minutes
-				max: 100, // limit each IP to 100 requests per windowMs,
+				max: 1000, // limit each IP to 100 requests per windowMs,
 				message: "Too many requests from this ip. Please try again in 5mins",
 			})
 		);
@@ -82,11 +82,11 @@ class App {
 	}
 
 	private configRoutes() {
-		this.app.get("/", (req, res) => {
-			res.json({ message: "Hello world" });
-		});
+		// this.app.get("/", (req, res) => {
+		// 	res.json({ message: "Hello world" });
+		// });
 
-		this.app.use("/hooks", hooksRouter);
+		this.app.use("/api/hooks", hooksRouter);
 	}
 }
 
