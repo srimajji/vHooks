@@ -10,6 +10,7 @@ import {
 	UpdateDateColumn,
 } from "typeorm";
 import { Hook } from "./Hook";
+import { HookRequest } from "./HookRequest";
 
 @Entity({ name: "hook_response" })
 export class HookResponse extends BaseEntity {
@@ -25,9 +26,11 @@ export class HookResponse extends BaseEntity {
 	@Column({ type: "int", default: 200 })
 	status: number;
 
-	@OneToOne(type => Hook, hook => hook.hookResponse)
-	@JoinColumn({ name: "hook_id" })
-	hook: Hook;
+	@Column({ name: "response_eval_code", type: "longtext", nullable: true })
+	responseEvalCode: string;
+
+	@OneToOne(type => HookRequest, hookRequest => hookRequest.hookResponse)
+	hookRequest: HookRequest;
 
 	@CreateDateColumn({ name: "date_created" })
 	dateCreated: Date;

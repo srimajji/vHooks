@@ -6,9 +6,10 @@ import {
 	CreateDateColumn,
 	ManyToOne,
 	JoinColumn,
-	UpdateDateColumn,
+	OneToOne,
 } from "typeorm";
 import { Hook } from "./Hook";
+import { HookResponse } from "./HookResponse";
 
 @Entity({ name: "hook_request" })
 export class HookRequest extends BaseEntity {
@@ -39,8 +40,9 @@ export class HookRequest extends BaseEntity {
 	@Column({ type: "json" })
 	body: object;
 
-	@Column({ type: "json", name: "hook_request", nullable: true })
-	hookRequest: object;
+	@OneToOne(type => HookResponse, hookResponse => hookResponse.hookRequest, { cascade: true })
+	@JoinColumn({ name: "hook_response_id" })
+	hookResponse: HookResponse;
 
 	@ManyToOne(type => Hook, hook => hook.hookRequests)
 	@JoinColumn({ name: "hook_id" })

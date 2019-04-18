@@ -9,6 +9,7 @@ import {
 	OneToOne,
 	CreateDateColumn,
 	UpdateDateColumn,
+	JoinColumn,
 } from "typeorm";
 import * as random from "casual";
 import { HookRequest } from "./HookRequest";
@@ -23,11 +24,11 @@ export class Hook extends BaseEntity {
 	@Index("idx_permalink")
 	permalink: string;
 
+	@Column({ name: "response_eval_code", type: "longtext", nullable: true })
+	responseEvalCode: string;
+
 	@OneToMany(type => HookRequest, hookRequest => hookRequest.hook)
 	hookRequests: HookRequest[];
-
-	@OneToOne(type => HookResponse, hookResponse => hookResponse.hook)
-	hookResponse: HookResponse;
 
 	@CreateDateColumn({ name: "date_created" })
 	dateCreated: Date;
