@@ -1,6 +1,7 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, Entity, BeforeInsert, Index } from "typeorm";
+import { BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, Entity, BeforeInsert, Index, OneToOne } from "typeorm";
 import * as random from "casual";
 import { HookRequest } from "./HookRequest";
+import { HookResponse } from "./HookResponse";
 
 @Entity({ name: "hook" })
 export class Hook extends BaseEntity {
@@ -11,8 +12,11 @@ export class Hook extends BaseEntity {
 	@Index("idx_permalink")
 	permalink: string;
 
-	@OneToMany(type => HookRequest, hookRequest => hookRequest.hook, { eager: true })
+	@OneToMany(type => HookRequest, hookRequest => hookRequest.hook)
 	hookRequests: HookRequest[];
+
+	@OneToOne(type => HookResponse, hookResponse => hookResponse.hook)
+	hookResponse: HookResponse;
 
 	@BeforeInsert()
 	checkForPermalink() {
