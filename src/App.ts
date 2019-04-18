@@ -9,8 +9,9 @@ import { createConnection, QueryFailedError } from "typeorm";
 
 import { logger, stream } from "./utils/Logger";
 import { DB_DUPLICATE_ENTRY, DB_MISSING_FIELDS } from "./utils/Constants";
-import hooksRouter from "./routes/HooksRoutes";
+import { newHook, getHooks, updateHook } from "./routes/HookRoutes";
 import { ResourceNotFoundError } from "./utils/Errors";
+import { newHookRequest } from "./routes/HookRequestRoutes";
 
 class App {
 	public app: express.Application;
@@ -64,7 +65,7 @@ class App {
 			if (error instanceof ResourceNotFoundError) {
 				res.status(404).json({ error: error.args });
 			} else {
-				res.status(404).json({ error: error.message });
+				res.status(404).json({ error: error.args });
 			}
 		});
 	}
@@ -86,7 +87,10 @@ class App {
 		// 	res.json({ message: "Hello world" });
 		// });
 
-		this.app.use("/api/hooks", hooksRouter);
+		this.app.get("/api/hooks", getHooks);
+		this.app.post("/api/hooks", newHook);
+		this.app.put("/api/hooks/:id", updateHook);
+		this.app.use("/api/newHookRequest/:hookPermalink", newHookRequest);
 	}
 }
 

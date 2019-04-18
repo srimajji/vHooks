@@ -11,7 +11,7 @@
 	"scripts": {
 		"clean": "rm -rf dist",
 		"start": "yarn clean && yarn build:express && yarn build:next && node --inspect dist/Server.js",
-		"start:dev": "concurrently \"yarn build:express\" \"yarn build:next\" \"nodemon --inspect dist/Server.js | bunyan\"",
+		"start:dev": "yarn clean && concurrently \"yarn build:express\" \"yarn build:next\" \"nodemon --inspect dist/Server.js | bunyan\"",
 		"build:express": "tsc --p tsconfig.json",
 		"build:next": "next build",
 		"typeorm": "yarn run clean && yarn run build:express && dotenv-extended typeorm"

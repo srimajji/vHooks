@@ -1,4 +1,13 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from "typeorm";
+import {
+	BaseEntity,
+	Entity,
+	PrimaryGeneratedColumn,
+	Column,
+	CreateDateColumn,
+	ManyToOne,
+	JoinColumn,
+	UpdateDateColumn,
+} from "typeorm";
 import { Hook } from "./Hook";
 
 @Entity({ name: "hook_request" })
@@ -29,6 +38,9 @@ export class HookRequest extends BaseEntity {
 
 	@Column({ type: "json" })
 	body: object;
+
+	@Column({ type: "json", name: "hook_request", nullable: true })
+	hookRequest: object;
 
 	@ManyToOne(type => Hook, hook => hook.hookRequests)
 	@JoinColumn({ name: "hook_id" })

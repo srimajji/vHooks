@@ -1,4 +1,15 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, OneToMany, Entity, BeforeInsert, Index, OneToOne } from "typeorm";
+import {
+	BaseEntity,
+	PrimaryGeneratedColumn,
+	Column,
+	OneToMany,
+	Entity,
+	BeforeInsert,
+	Index,
+	OneToOne,
+	CreateDateColumn,
+	UpdateDateColumn,
+} from "typeorm";
 import * as random from "casual";
 import { HookRequest } from "./HookRequest";
 import { HookResponse } from "./HookResponse";
@@ -17,6 +28,12 @@ export class Hook extends BaseEntity {
 
 	@OneToOne(type => HookResponse, hookResponse => hookResponse.hook)
 	hookResponse: HookResponse;
+
+	@CreateDateColumn({ name: "date_created" })
+	dateCreated: Date;
+
+	@UpdateDateColumn({ name: "last_updated" })
+	lastUpdate: Date;
 
 	@BeforeInsert()
 	checkForPermalink() {

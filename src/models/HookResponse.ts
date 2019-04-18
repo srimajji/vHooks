@@ -1,9 +1,18 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, ManyToOne, JoinColumn, OneToOne } from "typeorm";
+import {
+	BaseEntity,
+	Entity,
+	PrimaryGeneratedColumn,
+	CreateDateColumn,
+	Column,
+	ManyToOne,
+	JoinColumn,
+	OneToOne,
+	UpdateDateColumn,
+} from "typeorm";
 import { Hook } from "./Hook";
 
 @Entity({ name: "hook_response" })
 export class HookResponse extends BaseEntity {
-
 	@PrimaryGeneratedColumn("uuid")
 	id: string;
 
@@ -20,6 +29,9 @@ export class HookResponse extends BaseEntity {
 	@JoinColumn({ name: "hook_id" })
 	hook: Hook;
 
-	@CreateDateColumn()
+	@CreateDateColumn({ name: "date_created" })
 	dateCreated: Date;
+
+	@UpdateDateColumn({ name: "last_udpated" })
+	lastUpdated: Date;
 }

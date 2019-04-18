@@ -11,11 +11,11 @@ const dev = true || process.env.NODE_ENV !== "production";
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
-nextApp.prepare()
+nextApp
+	.prepare()
 	.then(() => {
-
 		// Client side routing
-		app.get("/hook/:permalink", async (req, res) => {
+		app.get("/p/:permalink", async (req, res) => {
 			const { permalink } = req.params;
 			const hook = await Hook.findOne({ permalink }, { relations: ["hookRequests"] });
 			if (!hook) {
@@ -65,7 +65,8 @@ nextApp.prepare()
 			logger.info(`App is running at http://localhost:${port}`);
 			logger.info("Press CTRL-C to stop");
 		});
-	}).catch((ex: any) => {
+	})
+	.catch((ex: any) => {
 		logger.error(ex.stack);
 		process.exit(1);
 	});
