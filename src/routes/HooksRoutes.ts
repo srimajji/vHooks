@@ -56,17 +56,7 @@ hooksRouter.all(
 			return;
 		}
 
-		const hookRequest = new HookRequest();
-
-		hookRequest.requestId = req.id;
-		hookRequest.headers = req.headers;
-		hookRequest.host = req.host;
-		hookRequest.ip = req.ip;
-		hookRequest.method = req.method;
-		hookRequest.body = req.body;
-		hookRequest.query = req.query;
-		hookRequest.httpVersion = req.httpVersion;
-		hookRequest.hook = hook;
+		const hookRequest = HookRequest.create(req);
 
 		await hookRequest.save().catch(e => {
 			logger.error("Error saving hookRequest for hook", { e, hookRequest, hook });

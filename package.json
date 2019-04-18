@@ -14,7 +14,7 @@
 		"start:dev": "concurrently \"yarn build:express\" \"yarn build:next\" \"nodemon --inspect dist/Server.js | bunyan\"",
 		"build:express": "tsc --p tsconfig.json",
 		"build:next": "next build",
-		"typeorm": "yarn run clean && yarn run build && dotenv-extended typeorm"
+		"typeorm": "yarn run clean && yarn run build:express && dotenv-extended typeorm"
 	},
 	"prettier": {
 		"tabWidth": 4,
