@@ -61,7 +61,7 @@ export const newHookRequest = wrapAsync(async (req: any, res: express.Response, 
 			res.append(header, get(headers, header, ""));
 		}
 
-		if (!body && (body.constructor === Object && !Object.keys(body).length)) {
+		if (!body || (body.constructor === Object && !Object.keys(body).length)) {
 			res.send();
 		} else {
 			res.send(body.toString());

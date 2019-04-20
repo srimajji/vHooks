@@ -34,5 +34,5 @@ export const newHook = wrapAsync(async (req: express.Request, res: express.Respo
 	});
 
 	logger.info("Create a new hook", { hook });
-	res.json({ ...hook });
+	res.status(201).json({ ...hook });
 });

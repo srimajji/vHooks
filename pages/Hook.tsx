@@ -13,27 +13,23 @@ const Hook = ({ url }) => {
 		return () => {
 			socket.disconnect();
 		};
-	});
-	console.log(hookRequests);
+	}, []);
+
 	return (
 		<div>
 			<div>{hook.id}</div>
 			<div>{hook.permalink}</div>
 			<ul>
-				{
-					hookRequests.map(hookRequest => (
-						<li key={hookRequest.id}>
-							<div>
-								<h4>id: {hookRequest.id}</h4>
-								<p>requestid: {hookRequest.requestId}</p>
-								<p>host: {hookRequest.host}</p>
-								<p>httpVersion: {hookRequest.httpVersion}</p>
-								<p>method: {hookRequest.method}</p>
-								<p>dateCreated: {hookRequest.dateCreated}</p>
-							</div>
-						</li>
-					))
-				}
+				{hookRequests.map(hookRequest => (
+					<li key={hookRequest.id}>
+						<h4>id: {hookRequest.id}</h4>
+						<p>requestid: {hookRequest.requestId}</p>
+						<p>host: {hookRequest.host}</p>
+						<p>httpVersion: {hookRequest.httpVersion}</p>
+						<p>method: {hookRequest.method}</p>
+						<p>dateCreated: {hookRequest.dateCreated.toString()}</p>
+					</li>
+				))}
 			</ul>
 		</div>
 	);
