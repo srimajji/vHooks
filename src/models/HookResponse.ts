@@ -34,7 +34,4 @@ export class HookResponse extends BaseEntity {
 
 	@CreateDateColumn({ name: "date_created" })
 	dateCreated: Date;
-
-	@UpdateDateColumn({ name: "last_udpated" })
-	lastUpdated: Date;
 }

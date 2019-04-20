@@ -34,7 +34,7 @@ export class Hook extends BaseEntity {
 	dateCreated: Date;
 
 	@UpdateDateColumn({ name: "last_updated" })
-	lastUpdate: Date;
+	lastUpdated: Date;
 
 	@BeforeInsert()
 	checkForPermalink() {

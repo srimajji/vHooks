@@ -18,6 +18,7 @@ export const newHookRequest = wrapAsync(async (req: any, res: express.Response, 
 
 	const hookRequest = HookRequest.create(req);
 	hookRequest.requestId = req.id;
+	hookRequest.hook = hook;
 
 	// set eval for custom request
 	const request = {
