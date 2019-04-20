@@ -83,9 +83,9 @@ class App {
 	}
 
 	private configRoutes() {
-		// this.app.get("/", (req, res) => {
-		// 	res.json({ message: "Hello world" });
-		// });
+		this.app.get("/api", (req, res) => {
+			res.json({ message: "Verify hooks app" });
+		});
 
 		this.app.get("/api/hooks", getHooks);
 		this.app.post("/api/hooks", newHook);
