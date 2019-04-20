@@ -25,6 +25,10 @@ nextApp
 			return nextApp.render(req, res, "/Hook", { hook });
 		});
 
+		app.get("/", async (req, res) => {
+			return nextApp.render(req, res, "/Home");
+		});
+
 		app.get("*", (req, res) => {
 			return handle(req, res);
 		});
