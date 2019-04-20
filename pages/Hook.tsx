@@ -19,6 +19,7 @@ const Hook = ({ url }) => {
 		<div>
 			<div>{hook.id}</div>
 			<div>{hook.permalink}</div>
+			<pre>{hook.responseEvalCode}</pre>
 			<ul>
 				{hookRequests.map(hookRequest => (
 					<li key={hookRequest.id}>
