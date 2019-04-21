@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import io from "socket.io-client";
+import { HookRequest } from "../components";
+import request from "../src/utils/Request";
 
 const Hook = ({ url }) => {
 	const { hook } = url.query;
@@ -15,20 +17,36 @@ const Hook = ({ url }) => {
 		};
 	}, []);
 
+	const [responseEvalCode, setResponseEvalCode] = useState(hook.responseEvalCode || "");
+	const onChangeResponseEvalCode = (event) => {
+		setResponseEvalCode(event.target.value);
+	};
+
+	const [errorMsg, setErrorMsg] = useState("");
+	const onClickUpdateResponseEvalCode = async (id, evalCode) => {
+		const { data, status } = await request.put(`/api/hooks/${id}`, { responseEvalCode: evalCode });
+		if (status !== 200) {
+			setErrorMsg("Try again please!");
+		}
+		console.log(data);
+	};
+
 	return (
 		<div>
 			<div>{hook.id}</div>
 			<div>{hook.permalink}</div>
-			<pre>{hook.responseEvalCode}</pre>
+			<textarea
+				name="responseEvalCode"
+				value={responseEvalCode}
+				placeholder="Customize response here"
+				rows={10}
+				onChange={onChangeResponseEvalCode}
+			/>
+			<div><button onClick={() => onClickUpdateResponseEvalCode(hook.id, responseEvalCode)}>Update</button>{errorMsg}</div>
 			<ul>
 				{hookRequests.map(hookRequest => (
 					<li key={hookRequest.id}>
-						<h4>id: {hookRequest.id}</h4>
-						<p>requestid: {hookRequest.requestId}</p>
-						<p>host: {hookRequest.host}</p>
-						<p>httpVersion: {hookRequest.httpVersion}</p>
-						<p>method: {hookRequest.method}</p>
-						<p>dateCreated: {hookRequest.dateCreated.toString()}</p>
+						<HookRequest hookRequest={hookRequest} />
 					</li>
 				))}
 			</ul>
