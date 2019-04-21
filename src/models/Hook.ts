@@ -41,7 +41,10 @@ export class Hook extends BaseEntity {
 		if (!this.permalink) {
 			this.permalink = random.array_of_words(4).join("-");
 		} else {
-			this.permalink = this.permalink.split(" ").join("-");
+			this.permalink = this.permalink
+				.trim()
+				.split(" ")
+				.join("-");
 		}
 	}
 }

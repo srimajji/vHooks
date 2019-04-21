@@ -22,9 +22,9 @@ class App {
 		this.app = express();
 		this.config();
 		this.configureExternalServices();
+		this.configRoutes();
 		this.configDatabaseError();
 		this.configGlobalErrors();
-		this.configRoutes();
 	}
 
 	private config() {
@@ -65,7 +65,7 @@ class App {
 			if (error instanceof ResourceNotFoundError) {
 				res.status(404).json({ error: error.args });
 			} else {
-				res.status(404).json({ error: error.args });
+				res.status(404).json({ error });
 			}
 		});
 	}

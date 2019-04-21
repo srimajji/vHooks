@@ -4,6 +4,7 @@ import { wrapAsync } from "../utils/Helpers";
 import { logger } from "../utils/Logger";
 import * as vm from "vm";
 import { HookResponse } from "../models/HookResponse";
+import { QueryFailedError } from "typeorm";
 
 export const getHooks = wrapAsync(async (req: express.Request, res: express.Response) => {
 	const hooks: Hook[] = await Hook.find({ relations: ["hookResponse"] });
@@ -24,14 +25,8 @@ export const updateHook = wrapAsync(async (req: any, res: express.Response) => {
 });
 
 export const newHook = wrapAsync(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-	const hook = new Hook();
-	await hook.save().catch(e => {
-		const errorMsg = "Error saving hook";
-		const error = new Error(errorMsg);
-		logger.error(errorMsg, { hook, e });
-		next(error);
-		return;
-	});
+	const hook = Hook.create(req.body);
+	await hook.save();
 
 	logger.info("Create a new hook", { hook });
 	res.status(201).json({ ...hook });
