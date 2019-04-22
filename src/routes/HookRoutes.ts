@@ -2,9 +2,6 @@ import * as express from "express";
 import { Hook } from "../models/Hook";
 import { wrapAsync } from "../utils/Helpers";
 import { logger } from "../utils/Logger";
-import * as vm from "vm";
-import { HookResponse } from "../models/HookResponse";
-import { QueryFailedError } from "typeorm";
 
 export const getHooks = wrapAsync(async (req: express.Request, res: express.Response) => {
 	const hooks: Hook[] = await Hook.find({ relations: ["hookResponse"] });

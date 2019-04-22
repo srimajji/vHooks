@@ -1,7 +1,8 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { HookRequest } from "../components";
 import request from "../src/utils/Request";
+import { Layout } from "../components";
 
 const Hook = ({ url }) => {
 	const { hook } = url.query;
@@ -18,7 +19,7 @@ const Hook = ({ url }) => {
 	}, []);
 
 	const [responseEvalCode, setResponseEvalCode] = useState(hook.responseEvalCode || "");
-	const onChangeResponseEvalCode = (event) => {
+	const onChangeResponseEvalCode = event => {
 		setResponseEvalCode(event.target.value);
 	};
 
@@ -32,7 +33,16 @@ const Hook = ({ url }) => {
 	};
 
 	return (
-		<div>
+		<Layout>
+			<style tsx>
+				{`
+					body > div {
+						grid-row: 2;
+						grid-column: 2;
+						text-align: center;
+					}
+			`}
+			</style>
 			<div>{hook.id}</div>
 			<div>{hook.permalink}</div>
 			<textarea
@@ -42,7 +52,10 @@ const Hook = ({ url }) => {
 				rows={10}
 				onChange={onChangeResponseEvalCode}
 			/>
-			<div><button onClick={() => onClickUpdateResponseEvalCode(hook.id, responseEvalCode)}>Update</button>{errorMsg}</div>
+			<div>
+				<button onClick={() => onClickUpdateResponseEvalCode(hook.id, responseEvalCode)}>Update</button>
+				{errorMsg}
+			</div>
 			<ul>
 				{hookRequests.map(hookRequest => (
 					<li key={hookRequest.id}>
@@ -50,7 +63,7 @@ const Hook = ({ url }) => {
 					</li>
 				))}
 			</ul>
-		</div>
+		</Layout>
 	);
 };
 

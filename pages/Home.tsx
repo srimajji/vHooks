@@ -32,6 +32,15 @@ const Home = () => {
 
 	return (
 		<Layout>
+			<style tsx>
+				{`
+					body > div {
+						grid-row: 2;
+						grid-column: 2;
+						text-align: center;
+					}
+			`}
+			</style>
 			<h1>vHooks</h1>
 			<Input
 				placeholder="Permalink"
