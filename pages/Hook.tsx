@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { HookRequest } from "../components";
 import request from "../src/utils/Request";
-import { Layout } from "../components";
+import Layout from "../components/Layout";
 
 const Hook = ({ url }) => {
 	const { hook } = url.query;
 	const [hookRequests, setHookRequests] = useState(hook.hookRequests || []);
+	const socket = io();
+
 	useEffect(() => {
-		const socket = io();
 		socket.on("newHookRequest", data => {
 			const newHookRequest = [...hookRequests, data];
 			setHookRequests(newHookRequest);
@@ -16,7 +17,7 @@ const Hook = ({ url }) => {
 		return () => {
 			socket.disconnect();
 		};
-	}, []);
+	}, [socket]);
 
 	const [responseEvalCode, setResponseEvalCode] = useState(hook.responseEvalCode || "");
 	const onChangeResponseEvalCode = event => {
@@ -34,7 +35,7 @@ const Hook = ({ url }) => {
 
 	return (
 		<Layout>
-			<style tsx>
+			<style>
 				{`
 					body > div {
 						grid-row: 2;

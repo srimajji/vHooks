@@ -1,11 +1,14 @@
 import * as express from "express";
+import { get } from "lodash";
 import { Hook } from "../models/Hook";
 import { wrapAsync } from "../utils/Helpers";
 import { logger } from "../utils/Logger";
 
 export const getHooks = wrapAsync(async (req: express.Request, res: express.Response) => {
-	const hooks: Hook[] = await Hook.find({ relations: ["hookResponse"] });
-	res.json(hooks);
+	const take = get(req, "query.max", 10);
+	const skip = get(req, "query.skip", 0);
+	const hooks: [Hook[], number] = await Hook.findAndCount({ take, skip });
+	res.json({ hooks: hooks[0], totalCount: hooks[1], max: take, skip });
 });
 
 export const updateHook = wrapAsync(async (req: any, res: express.Response) => {

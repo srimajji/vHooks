@@ -1,11 +1,13 @@
 import { useState } from "react";
 import Router from "next/router";
+import Link from "next/link";
 import { Button, Input } from "semantic-ui-react";
 
 import Layout from "../components/Layout";
 import request from "../src/utils/Request";
 
-const Home = () => {
+const Home = ({ url }) => {
+	const { hooks } = url.query;
 	const [errorMsg, setErrorMsg] = useState("");
 	const [permalink, setPermalink] = useState("");
 
@@ -39,17 +41,30 @@ const Home = () => {
 						grid-column: 2;
 						text-align: center;
 					}
-			`}
+
+					.hooksContainer {
+						list-style: none;
+					}
+				`}
 			</style>
-			<h1>vHooks</h1>
-			<Input
-				placeholder="Permalink"
-				value={permalink}
-				onChange={onChangePermalink}
-				label={<Button onClick={() => onClickCreateHook(permalink)}>Create hook</Button>}
-				labelPosition="right"
-			/>
-			<p>{errorMsg}</p>
+			<div>
+				<h1>vHooks</h1>
+				<Input
+					placeholder="Permalink"
+					value={permalink}
+					onChange={onChangePermalink}
+					label={<Button onClick={() => onClickCreateHook(permalink)}>Create hook</Button>}
+					labelPosition="right"
+				/>
+				<p>{errorMsg}</p>
+			</div>
+			<ul className="hooksContainer">
+				{
+					hooks.map(hook => (
+						<li key={hook.id}><Link as={`/p/${hook.permalink}`}>{hook.permalink}</Link></li>
+					))
+				}
+			</ul>
 		</Layout>
 	);
 };

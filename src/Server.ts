@@ -26,7 +26,8 @@ nextApp
 		});
 
 		app.get("/", async (req, res) => {
-			return nextApp.render(req, res, "/Home");
+			const hooks = await Hook.find({ take: 20, order: { dateCreated: "DESC" } });
+			return nextApp.render(req, res, "/Home", { hooks });
 		});
 
 		app.get("*", (req, res) => {
