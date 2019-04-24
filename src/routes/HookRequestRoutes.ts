@@ -31,7 +31,7 @@ export const newHookRequest = wrapAsync(async (req: any, res: express.Response, 
 
 	const response = {
 		status: 200,
-		headers: { "Content-Type": "application/text" },
+		headers: { "Content-Type": "application/json" },
 		body: {},
 	};
 
@@ -64,7 +64,7 @@ export const newHookRequest = wrapAsync(async (req: any, res: express.Response, 
 		if (!body || (body.constructor === Object && !Object.keys(body).length)) {
 			res.send();
 		} else {
-			res.send(body.toString());
+			res.send(body);
 		}
 		logger.info("Created a new hookRequest", { hook, hookRequest });
 		events.emit("newHookRequest", hook.id, hookRequest);

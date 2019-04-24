@@ -26,6 +26,7 @@ export const updateHook = wrapAsync(async (req: any, res: express.Response) => {
 
 export const newHook = wrapAsync(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 	const hook = Hook.create(req.body);
+	hook.responseEvalCode = "response.status=200;\n\n\nresponse.headers = {'content-type': 'application/json'};\n\n\nresponse.body={'message': 'Hello world'};\n\n\n";
 	await hook.save();
 
 	logger.info("Create a new hook", { hook });

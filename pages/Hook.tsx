@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
+import { TextArea } from "semantic-ui-react";
 import { HookRequest } from "../components";
 import request from "../src/utils/Request";
 import Layout from "../components/Layout";
 
 const Hook = ({ url }) => {
+	console.log(url.pathname);
 	const { hook } = url.query;
 	const [hookRequests, setHookRequests] = useState(hook.hookRequests || []);
 	const socket = io();
@@ -42,11 +44,26 @@ const Hook = ({ url }) => {
 						grid-column: 2;
 						text-align: center;
 					}
+
+					.newHookRequestUrlContainer {
+						margin: 10px;
+						padding: 10px;
+						border: 1px solid;
+						cursor: pointer;
+					}
+
+					.hookRequestsContainer {
+						text-align: left;
+						list-style: none;
+					}
+
 			`}
 			</style>
-			<div>{hook.id}</div>
-			<div>{hook.permalink}</div>
-			<textarea
+			<h1>{hook.permalink}</h1>
+			<div className="newHookRequestUrlContainer">
+				Curl -X POST {`http://localhost:8080/api/newHookRequest/${hook.permalink}`}
+			</div>
+			<TextArea
 				name="responseEvalCode"
 				value={responseEvalCode}
 				placeholder="Customize response here"
@@ -57,7 +74,7 @@ const Hook = ({ url }) => {
 				<button onClick={() => onClickUpdateResponseEvalCode(hook.id, responseEvalCode)}>Update</button>
 				{errorMsg}
 			</div>
-			<ul>
+			<ul className="hookRequestsContainer">
 				{hookRequests.map(hookRequest => (
 					<li key={hookRequest.id}>
 						<HookRequest hookRequest={hookRequest} />
