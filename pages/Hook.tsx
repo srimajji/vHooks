@@ -7,10 +7,9 @@ import { HookRequest } from "../components";
 import request from "../src/utils/Request";
 import Layout from "../components/Layout";
 
-const TextEditor = dynamic(() => import("../components/TextEditor"));
+const TextEditor = dynamic(() => import("../components/TextEditor"), { ssr: false });
 
 const Hook = ({ url }) => {
-	console.log(url.pathname);
 	const { hook } = url.query;
 	const [hookRequests, setHookRequests] = useState(hook.hookRequests || []);
 	const socket = io();
@@ -26,8 +25,17 @@ const Hook = ({ url }) => {
 	}, [socket]);
 
 	const [responseEvalCode, setResponseEvalCode] = useState(hook.responseEvalCode || "");
-	const onChangeResponseEvalCode = event => {
-		setResponseEvalCode(event.target.value);
+	const onChangeResponseEvalCode = value => {
+		setResponseEvalCode(value);
+	};
+
+	const [enableUpdateBtn, setEnableUpdateBtn] = useState(false);
+	const onValidateResponseEvalCode = errors => {
+		if (errors.length > 0) {
+			setEnableUpdateBtn(true);
+		} else {
+			setEnableUpdateBtn(false);
+		}
 	};
 
 	const [errorMsg, setErrorMsg] = useState("");
@@ -64,30 +72,22 @@ const Hook = ({ url }) => {
 					.textEditorContainer {
 						margin-bottom: 10px;
 					}
-
-			`}
+				`}
 			</style>
 			<h1>{hook.permalink}</h1>
 			<div className="newHookRequestUrlContainer">
 				Curl -X POST {`http://localhost:8080/api/newHookRequest/${hook.permalink}`}
 			</div>
-			{/* <Form className="responseEvalCodeFormContainer">
-				<TextArea
-					name="responseEvalCode"
-					value={responseEvalCode}
-					placeholder="Customize response here"
-					rows={10}
-					onChange={onChangeResponseEvalCode}
-				/>
-			</Form> */}
 			<div className="textEditorContainer">
 				<TextEditor
 					onChange={onChangeResponseEvalCode}
 					value={responseEvalCode}
+					onValidate={(errors) => setEnableUpdateBtn(errors.length ? true : false)}
 				/>
+				{errorMsg}
 			</div>
 			<div>
-				<Button className="updateResponseEvalCodeBtn" onClick={() => onClickUpdateResponseEvalCode(hook.id, responseEvalCode)} primary>Update</Button>
+				<Button className="updateResponseEvalCodeBtn" disabled={enableUpdateBtn} onClick={() => onClickUpdateResponseEvalCode(hook.id, responseEvalCode)} primary>Update</Button>
 				{errorMsg}
 			</div>
 			<ul className="hookRequestsContainer">
