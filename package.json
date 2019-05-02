@@ -10,7 +10,7 @@
 	},
 	"scripts": {
 		"clean": "rm -rf dist",
-		"start": "yarn clean && yarn build:express && yarn export:next && node dist/Server.js",
+		"start": "yarn clean && yarn build:express && yarn build:next && node dist/Server.js",
 		"start:dev": "yarn clean && concurrently \"yarn build:express\" \"yarn build:next\" \"nodemon --inspect dist/Server.js | bunyan\"",
 		"build:express": "tsc --p tsconfig.json",
 		"build:next": "next build",
@@ -77,6 +77,7 @@
 		"mysql": "^2.16.0",
 		"next": "^8.0.4",
 		"react": "^16.8.6",
+		"react-ace": "^6.5.0",
 		"react-dom": "^16.8.6",
 		"reflect-metadata": "^0.1.13",
 		"semantic-ui-react": "^0.86.0",

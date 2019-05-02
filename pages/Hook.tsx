@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
-import { TextArea } from "semantic-ui-react";
+import { TextArea, Form, Button } from "semantic-ui-react";
+import dynamic from "next/dynamic";
+
 import { HookRequest } from "../components";
 import request from "../src/utils/Request";
 import Layout from "../components/Layout";
+
+const TextEditor = dynamic(() => import("../components/TextEditor"));
 
 const Hook = ({ url }) => {
 	console.log(url.pathname);
@@ -46,15 +50,19 @@ const Hook = ({ url }) => {
 					}
 
 					.newHookRequestUrlContainer {
-						margin: 10px;
 						padding: 10px;
 						border: 1px solid;
 						cursor: pointer;
+						margin-bottom: 10px;
 					}
 
 					.hookRequestsContainer {
 						text-align: left;
 						list-style: none;
+					}
+
+					.textEditorContainer {
+						margin-bottom: 10px;
 					}
 
 			`}
@@ -63,15 +71,23 @@ const Hook = ({ url }) => {
 			<div className="newHookRequestUrlContainer">
 				Curl -X POST {`http://localhost:8080/api/newHookRequest/${hook.permalink}`}
 			</div>
-			<TextArea
-				name="responseEvalCode"
-				value={responseEvalCode}
-				placeholder="Customize response here"
-				rows={10}
-				onChange={onChangeResponseEvalCode}
-			/>
+			{/* <Form className="responseEvalCodeFormContainer">
+				<TextArea
+					name="responseEvalCode"
+					value={responseEvalCode}
+					placeholder="Customize response here"
+					rows={10}
+					onChange={onChangeResponseEvalCode}
+				/>
+			</Form> */}
+			<div className="textEditorContainer">
+				<TextEditor
+					onChange={onChangeResponseEvalCode}
+					value={responseEvalCode}
+				/>
+			</div>
 			<div>
-				<button onClick={() => onClickUpdateResponseEvalCode(hook.id, responseEvalCode)}>Update</button>
+				<Button className="updateResponseEvalCodeBtn" onClick={() => onClickUpdateResponseEvalCode(hook.id, responseEvalCode)} primary>Update</Button>
 				{errorMsg}
 			</div>
 			<ul className="hookRequestsContainer">
