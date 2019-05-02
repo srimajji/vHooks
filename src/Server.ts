@@ -18,11 +18,12 @@ nextApp
 		app.get("/p/:permalink", async (req, res) => {
 			const { permalink } = req.params;
 			const hook = await Hook.findOne({ permalink }, { relations: ["hookRequests"] });
+			const hookRequestCount = hook.hookRequests.length;
 			if (!hook) {
 				res.statusCode = 404;
 				return nextApp.render(req, res, "/_error", { ...req.query });
 			}
-			return nextApp.render(req, res, "/Hook", { hook });
+			return nextApp.render(req, res, "/Hook", { hook, hookRequestCount });
 		});
 
 		app.get("/", async (req, res) => {

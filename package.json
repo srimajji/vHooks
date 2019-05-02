@@ -10,7 +10,7 @@
 	},
 	"scripts": {
 		"clean": "rm -rf dist",
-		"start": "yarn clean && yarn build:express && yarn build:next && node dist/Server.js",
+		"start": "yarn clean && yarn build:express && yarn build:next && node --inspect dist/Server.js",
 		"start:dev": "yarn clean && concurrently \"yarn build:express\" \"yarn build:next\" \"nodemon --inspect dist/Server.js | bunyan\"",
 		"build:express": "tsc --p tsconfig.json",
 		"build:next": "next build",

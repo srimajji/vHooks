@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
-import { TextArea, Form, Button } from "semantic-ui-react";
+import { TextArea, Form, Button, Statistic } from "semantic-ui-react";
 import dynamic from "next/dynamic";
 
 import { HookRequest } from "../components";
@@ -10,14 +10,16 @@ import Layout from "../components/Layout";
 const TextEditor = dynamic(() => import("../components/TextEditor"), { ssr: false });
 
 const Hook = ({ url }) => {
-	const { hook } = url.query;
+	const { hook, hookRequestCount } = url.query;
 	const [hookRequests, setHookRequests] = useState(hook.hookRequests || []);
+	const [totalRequests, setTotalRequests] = useState(hookRequestCount);
 	const socket = io();
 
 	useEffect(() => {
 		socket.on("newHookRequest", data => {
-			const newHookRequest = [...hookRequests, data];
+			const newHookRequest = [data, ...hookRequests];
 			setHookRequests(newHookRequest);
+			setTotalRequests(totalRequests + 1);
 		});
 		return () => {
 			socket.disconnect();
@@ -72,6 +74,18 @@ const Hook = ({ url }) => {
 					.textEditorContainer {
 						margin-bottom: 10px;
 					}
+
+					.responseEvalCodeBtnContainer {
+						text-align: left;
+					}
+
+					.hookRequestCounter {
+						margin: 10px 0;
+					}
+
+					.hookRequestContainer {
+						margin: 20px 0;
+					}
 				`}
 			</style>
 			<h1>{hook.permalink}</h1>
@@ -86,13 +100,19 @@ const Hook = ({ url }) => {
 				/>
 				{errorMsg}
 			</div>
-			<div>
+			<div className="responseEvalCodeBtnContainer">
 				<Button className="updateResponseEvalCodeBtn" disabled={enableUpdateBtn} onClick={() => onClickUpdateResponseEvalCode(hook.id, responseEvalCode)} primary>Update</Button>
 				{errorMsg}
 			</div>
+			<div className="hookRequestCounter">
+				<Statistic horizontal>
+					<Statistic.Value>{totalRequests}</Statistic.Value>
+					<Statistic.Label>requests</Statistic.Label>
+				</Statistic>
+			</div>
 			<ul className="hookRequestsContainer">
 				{hookRequests.map(hookRequest => (
-					<li key={hookRequest.id}>
+					<li className="hookRequestContainer" key={hookRequest.id}>
 						<HookRequest hookRequest={hookRequest} />
 					</li>
 				))}

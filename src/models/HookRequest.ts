@@ -40,7 +40,7 @@ export class HookRequest extends BaseEntity {
 	@Column({ type: "json" })
 	body: object;
 
-	@OneToOne(type => HookResponse, hookResponse => hookResponse.hookRequest, { cascade: true })
+	@OneToOne(type => HookResponse, hookResponse => hookResponse.hookRequest, { cascade: true, lazy: false })
 	@JoinColumn({ name: "hook_response_id" })
 	hookResponse: HookResponse;
 

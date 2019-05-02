@@ -15,7 +15,7 @@ const TextEditor = ({ value, onChange, onValidate }) => (
 				$blockScrolling: true
 			}}
 			fontSize={12}
-			height="40vh"
+			height="20vh"
 			width="100%"
 		/>
 	</div>

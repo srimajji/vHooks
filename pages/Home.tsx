@@ -60,7 +60,7 @@ const Home = ({ url }) => {
 				<Input
 					placeholder="Search"
 					onChange={onChangeSearchHooks}
-					label={<Button onClick={() => onClickCreateHook(permalink)}>Search</Button>}
+					label={<Button onClick={() => onClickCreateHook(permalink)} primary>Search</Button>}
 					labelPosition="right"
 					className="searchInput"
 				/>
@@ -68,7 +68,7 @@ const Home = ({ url }) => {
 					placeholder="Permalink"
 					value={permalink}
 					onChange={onChangePermalink}
-					label={<Button onClick={() => onClickCreateHook(permalink)}>Create hook</Button>}
+					label={<Button onClick={() => onClickCreateHook(permalink)} primary>Create</Button>}
 					labelPosition="right"
 				/>
 				<p>{errorMsg}</p>
