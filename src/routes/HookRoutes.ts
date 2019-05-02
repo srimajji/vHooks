@@ -3,11 +3,13 @@ import { get } from "lodash";
 import { Hook } from "../models/Hook";
 import { wrapAsync } from "../utils/Helpers";
 import { logger } from "../utils/Logger";
+import { Raw, Like } from "typeorm";
 
 export const getHooks = wrapAsync(async (req: express.Request, res: express.Response) => {
 	const take = get(req, "query.max", 10);
 	const skip = get(req, "query.skip", 0);
-	const hooks: [Hook[], number] = await Hook.findAndCount({ take, skip });
+	const search = get(req, "query.q", "");
+	const hooks: [Hook[], number] = await Hook.findAndCount({ where: { permalink: Like(`%${search}%`) }, take, skip });
 	res.json({ hooks: hooks[0], totalCount: hooks[1], max: take, skip });
 });
 

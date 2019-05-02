@@ -1,18 +1,26 @@
 import { useState } from "react";
 import Router from "next/router";
 import Link from "next/link";
-import { Button, Input } from "semantic-ui-react";
+import { Button, Input, List } from "semantic-ui-react";
 
 import Layout from "../components/Layout";
 import request from "../src/utils/Request";
 
 const Home = ({ url }) => {
-	const { hooks } = url.query;
 	const [errorMsg, setErrorMsg] = useState("");
 	const [permalink, setPermalink] = useState("");
+	const [hooks, setHooks] = useState(url.query.hooks);
 
 	const onChangePermalink = ({ target }) => {
 		setPermalink(target.value);
+	};
+
+	const onChangeSearchHooks = async ({ target }) => {
+		const { status, data } = await request.get(`/api/hooks?q=${target.value}`);
+		if (status !== 200) {
+			return;
+		}
+		setHooks(data.hooks);
 	};
 
 	const onClickCreateHook = async permalink => {
@@ -34,7 +42,7 @@ const Home = ({ url }) => {
 
 	return (
 		<Layout>
-			<style tsx>
+			<style>
 				{`
 					body > div {
 						grid-row: 2;
@@ -42,13 +50,20 @@ const Home = ({ url }) => {
 						text-align: center;
 					}
 
-					.hooksContainer {
-						list-style: none;
+					.searchInput {
+						margin-right: 50px;
 					}
 				`}
 			</style>
 			<div>
 				<h1>vHooks</h1>
+				<Input
+					placeholder="Search"
+					onChange={onChangeSearchHooks}
+					label={<Button onClick={() => onClickCreateHook(permalink)}>Search</Button>}
+					labelPosition="right"
+					className="searchInput"
+				/>
 				<Input
 					placeholder="Permalink"
 					value={permalink}
@@ -58,13 +73,13 @@ const Home = ({ url }) => {
 				/>
 				<p>{errorMsg}</p>
 			</div>
-			<ul className="hooksContainer">
+			<List className="hooksContainer" verticalAlign="middle" animated>
 				{
 					hooks.map(hook => (
-						<li key={hook.id}><Link as={`/p/${hook.permalink}`}>{hook.permalink}</Link></li>
+						<List.Item key={hook.id}><Link as={`/p/${hook.permalink}`}>{hook.permalink}</Link></List.Item>
 					))
 				}
-			</ul>
+			</List>
 		</Layout>
 	);
 };
