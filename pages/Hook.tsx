@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
-import { TextArea, Form, Button, Statistic } from "semantic-ui-react";
+import { Button, Statistic } from "semantic-ui-react";
 import dynamic from "next/dynamic";
+import { withRouter } from "next/router";
 
 import { HookRequest } from "../components";
 import request from "../src/utils/Request";
 import Layout from "../components/Layout";
 
 const TextEditor = dynamic(() => import("../components/TextEditor"), { ssr: false });
+const socket = io();
 
-const Hook = ({ url }) => {
-	const { hook, hookRequestCount } = url.query;
+const Hook = ({ router }) => {
+	console.log(router);
+	const { hook, hookRequestCount } = router.query;
 	const [hookRequests, setHookRequests] = useState(hook.hookRequests || []);
 	const [totalRequests, setTotalRequests] = useState(hookRequestCount);
-	const socket = io();
 
 	useEffect(() => {
 		socket.on("newHookRequest", data => {
@@ -85,23 +87,30 @@ const Hook = ({ url }) => {
 
 					.hookRequestContainer {
 						margin: 20px 0;
+						text-align: left;
 					}
 				`}
 			</style>
 			<h1>{hook.permalink}</h1>
 			<div className="newHookRequestUrlContainer">
-				Curl -X POST {`http://localhost:8080/api/newHookRequest/${hook.permalink}`}
+				Curl -X POST {`${withRouter}/api/newHookRequest/${hook.permalink}`}
 			</div>
 			<div className="textEditorContainer">
 				<TextEditor
 					onChange={onChangeResponseEvalCode}
 					value={responseEvalCode}
-					onValidate={(errors) => setEnableUpdateBtn(errors.length ? true : false)}
+					onValidate={onValidateResponseEvalCode}
 				/>
 				{errorMsg}
 			</div>
 			<div className="responseEvalCodeBtnContainer">
-				<Button className="updateResponseEvalCodeBtn" disabled={enableUpdateBtn} onClick={() => onClickUpdateResponseEvalCode(hook.id, responseEvalCode)} primary>Update</Button>
+				<Button
+					className="updateResponseEvalCodeBtn"
+					disabled={enableUpdateBtn}
+					onClick={() => onClickUpdateResponseEvalCode(hook.id, responseEvalCode)}
+					primary>
+					Update
+				</Button>
 				{errorMsg}
 			</div>
 			<div className="hookRequestCounter">
@@ -110,15 +119,13 @@ const Hook = ({ url }) => {
 					<Statistic.Label>requests</Statistic.Label>
 				</Statistic>
 			</div>
-			<ul className="hookRequestsContainer">
-				{hookRequests.map(hookRequest => (
-					<li className="hookRequestContainer" key={hookRequest.id}>
-						<HookRequest hookRequest={hookRequest} />
-					</li>
-				))}
-			</ul>
+			{hookRequests.map(hookRequest => (
+				<div className="hookRequestContainer" key={hookRequest.id}>
+					<HookRequest hookRequest={hookRequest} />
+				</div>
+			))}
 		</Layout>
 	);
 };
 
-export default Hook;
+export default withRouter(Hook);

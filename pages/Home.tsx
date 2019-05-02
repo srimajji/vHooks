@@ -1,15 +1,16 @@
 import { useState } from "react";
 import Router from "next/router";
 import Link from "next/link";
+import { withRouter } from "next/router";
 import { Button, Input, List } from "semantic-ui-react";
 
 import Layout from "../components/Layout";
 import request from "../src/utils/Request";
 
-const Home = ({ url }) => {
+const Home = ({ router }) => {
 	const [errorMsg, setErrorMsg] = useState("");
 	const [permalink, setPermalink] = useState("");
-	const [hooks, setHooks] = useState(url.query.hooks);
+	const [hooks, setHooks] = useState(router.query.hooks);
 
 	const onChangePermalink = ({ target }) => {
 		setPermalink(target.value);
@@ -60,7 +61,11 @@ const Home = ({ url }) => {
 				<Input
 					placeholder="Search"
 					onChange={onChangeSearchHooks}
-					label={<Button onClick={() => onClickCreateHook(permalink)} primary>Search</Button>}
+					label={
+						<Button onClick={() => onClickCreateHook(permalink)} primary>
+							Search
+						</Button>
+					}
 					labelPosition="right"
 					className="searchInput"
 				/>
@@ -68,20 +73,24 @@ const Home = ({ url }) => {
 					placeholder="Permalink"
 					value={permalink}
 					onChange={onChangePermalink}
-					label={<Button onClick={() => onClickCreateHook(permalink)} primary>Create</Button>}
+					label={
+						<Button onClick={() => onClickCreateHook(permalink)} primary>
+							Create
+						</Button>
+					}
 					labelPosition="right"
 				/>
 				<p>{errorMsg}</p>
 			</div>
 			<List className="hooksContainer" verticalAlign="middle" animated>
-				{
-					hooks.map(hook => (
-						<List.Item key={hook.id}><Link as={`/p/${hook.permalink}`}>{hook.permalink}</Link></List.Item>
-					))
-				}
+				{hooks.map(hook => (
+					<List.Item key={hook.id}>
+						<Link as={`/p/${hook.permalink}`}>{hook.permalink}</Link>
+					</List.Item>
+				))}
 			</List>
 		</Layout>
 	);
 };
 
-export default Home;
+export default withRouter(Home);
