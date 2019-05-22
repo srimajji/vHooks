@@ -62,7 +62,7 @@ const Home = ({ router }) => {
 					placeholder="Search"
 					onChange={onChangeSearchHooks}
 					label={
-						<Button onClick={() => onClickCreateHook(permalink)} primary>
+						<Button onClick={onChangeSearchHooks} primary>
 							Search
 						</Button>
 					}

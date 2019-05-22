@@ -1,8 +1,7 @@
 import { Message, Segment } from "semantic-ui-react";
 
 export const HookRequest = ({ hookRequest }) => {
-	const { headers, query } = hookRequest;
-	console.log(hookRequest);
+	const { headers, query, hookResponse, body } = hookRequest;
 	return (
 		<div>
 			<Message attached header={`${hookRequest.method} /${hookRequest.requestId}`} />
@@ -14,14 +13,18 @@ export const HookRequest = ({ hookRequest }) => {
 					<div>
 						<pre>{JSON.stringify(headers, undefined, 2)}</pre>
 					</div>
-					<p>
-						query:{" "}
-						{Object.keys(query).map((q, key) => (
-							<div key={key}>
-								{q}:{query[q]}
-							</div>
-						))}
-					</p>
+					<div>
+						queryParams:
+						<pre>{JSON.stringify(query, undefined, 2)}</pre>
+					</div>
+					<div>
+						body:
+						<pre>{JSON.stringify(body, undefined, 2)}</pre>
+					</div>
+					<div>
+						hookResponse:
+						<pre>{JSON.stringify(hookResponse, undefined, 2)}</pre>
+					</div>
 				</div>
 			</Segment>
 		</div>

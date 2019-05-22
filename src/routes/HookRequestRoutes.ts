@@ -7,6 +7,7 @@ import { HookRequest } from "../models/HookRequest";
 import { logger } from "../utils/Logger";
 import events from "../services/EventService";
 import { HookResponse } from "../models/HookResponse";
+import { createQueryBuilder } from "typeorm";
 
 export const newHookRequest = wrapAsync(async (req: any, res: express.Response, next: express.NextFunction) => {
 	const hook = await Hook.findOne({ permalink: req.params.hookPermalink });
@@ -72,5 +73,29 @@ export const newHookRequest = wrapAsync(async (req: any, res: express.Response, 
 	} catch (e) {
 		logger.error("Evaluating request body", { e, requestId: req.id });
 		throw new Error("Error evaluating code");
+	}
+});
+
+
+export const getHookRequests = wrapAsync(async (req: any, res: express.Response, next: express.NextFunction) => {
+	const hook = await Hook.findOne({ id: req.params.hookId });
+	if (!hook) {
+		const error = new Error("Hook not found");
+		next(error);
+		return;
+	}
+	try {
+		const take = get(req, "query.max", 10);
+		const skip = get(req, "query.skip", 0);
+		const hookRequests = await createQueryBuilder(HookRequest)
+			.leftJoinAndSelect("HookRequest.hookResponse", "hookResponse")
+			.where("hook_id = :hookId", { hookId: hook.id })
+			.skip(skip)
+			.take(take)
+			.getManyAndCount();
+		res.json({ hookRequests: hookRequests[0], totalCount: hookRequests[1], max: take, skip });
+	} catch (e) {
+		logger.error("Error retreiving hookRequests", { error: e });
+		throw new Error("Error retreiving hookRequests");
 	}
 });

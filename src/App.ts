@@ -11,7 +11,7 @@ import { logger, stream } from "./utils/Logger";
 import { DB_DUPLICATE_ENTRY, DB_MISSING_FIELDS } from "./utils/Constants";
 import { newHook, getHooks, updateHook } from "./routes/HookRoutes";
 import { ResourceNotFoundError } from "./utils/Errors";
-import { newHookRequest } from "./routes/HookRequestRoutes";
+import { newHookRequest, getHookRequests } from "./routes/HookRequestRoutes";
 
 class App {
 	public app: express.Application;
@@ -91,6 +91,7 @@ class App {
 		this.app.post("/api/hooks", newHook);
 		this.app.put("/api/hooks/:id", updateHook);
 		this.app.use("/api/newHookRequest/:hookPermalink", newHookRequest);
+		this.app.get("/api/hookRequests/:hookId", getHookRequests);
 	}
 }
 

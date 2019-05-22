@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
-import { Button, Statistic } from "semantic-ui-react";
+import { Button, Statistic, Pagination } from "semantic-ui-react";
 import dynamic from "next/dynamic";
 import { withRouter } from "next/router";
 
@@ -11,22 +11,17 @@ import Layout from "../components/Layout";
 const TextEditor = dynamic(() => import("../components/TextEditor"), { ssr: false });
 const socket = io();
 
-const Hook = ({ router }) => {
-	console.log(router);
-	const { hook, hookRequestCount } = router.query;
-	const [hookRequests, setHookRequests] = useState(hook.hookRequests || []);
-	const [totalRequests, setTotalRequests] = useState(hookRequestCount);
+const PaginationMax = 5;
+const Hook = ({ router, data }) => {
+	const { hook, hostAddress } = router.query;
+	const [hookRequests, setHookRequests] = useState(data.hookRequests || []);
+	const [totalRequests, setTotalRequests] = useState(data.totalCount);
+	const [currentPage, setCurrentPage] = useState(1);
 
-	useEffect(() => {
-		socket.on("newHookRequest", data => {
-			const newHookRequest = [data, ...hookRequests];
-			setHookRequests(newHookRequest);
-			setTotalRequests(totalRequests + 1);
-		});
-		return () => {
-			socket.disconnect();
-		};
-	}, [socket]);
+	socket.on("newHookRequest", data => {
+		setHookRequests([data, ...hookRequests]);
+		setTotalRequests(totalRequests + 1);
+	});
 
 	const [responseEvalCode, setResponseEvalCode] = useState(hook.responseEvalCode || "");
 	const onChangeResponseEvalCode = value => {
@@ -44,11 +39,22 @@ const Hook = ({ router }) => {
 
 	const [errorMsg, setErrorMsg] = useState("");
 	const onClickUpdateResponseEvalCode = async (id, evalCode) => {
-		const { data, status } = await request.put(`/api/hooks/${id}`, { responseEvalCode: evalCode });
+		const { status } = await request.put(`/api/hooks/${id}`, { responseEvalCode: evalCode });
 		if (status !== 200) {
 			setErrorMsg("Try again please!");
 		}
-		console.log(data);
+	};
+
+	const onPageChange = async (event, pageData) => {
+		const { activePage } = pageData;
+		const skip = PaginationMax * (activePage - 1);
+		const { data, status } = await request.get(`/api/hookRequests/${hook.id}?max=${PaginationMax}&skip=${skip}`);
+		if (status !== 200) {
+			console.error(status);
+			return;
+		}
+		setHookRequests(data.hookRequests);
+		setCurrentPage(activePage);
 	};
 
 	return (
@@ -93,7 +99,7 @@ const Hook = ({ router }) => {
 			</style>
 			<h1>{hook.permalink}</h1>
 			<div className="newHookRequestUrlContainer">
-				Curl -X POST {`${withRouter}/api/newHookRequest/${hook.permalink}`}
+				curl -X POST {`${hostAddress}/api/newHookRequest/${hook.permalink}`}
 			</div>
 			<div className="textEditorContainer">
 				<TextEditor
@@ -119,6 +125,7 @@ const Hook = ({ router }) => {
 					<Statistic.Label>requests</Statistic.Label>
 				</Statistic>
 			</div>
+			<Pagination activePage={currentPage} totalPages={Math.ceil(totalRequests / PaginationMax)} onPageChange={onPageChange} />
 			{hookRequests.map(hookRequest => (
 				<div className="hookRequestContainer" key={hookRequest.id}>
 					<HookRequest hookRequest={hookRequest} />
@@ -126,6 +133,16 @@ const Hook = ({ router }) => {
 			))}
 		</Layout>
 	);
+};
+
+Hook.getInitialProps = async ({ query }) => {
+	const { hook } = query;
+	const { data, status } = await request.get(`http://127.0.0.1:${process.env.NODE_PORT}/api/hookRequests/${hook.id}?max=${PaginationMax}&skip=0`);
+	if (status !== 200) {
+		return { data: { hookRequests: [], totalCount: 0, max: 0, skip: 0 } };
+	}
+
+	return { data };
 };
 
 export default withRouter(Hook);

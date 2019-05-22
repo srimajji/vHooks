@@ -5,9 +5,11 @@ import { Socket } from "socket.io";
 import { logger } from "./utils/Logger";
 import events from "./services/EventService";
 import { Hook } from "./models/Hook";
+import * as ip from "ip";
+
 const next = require("next");
 
-const dev = true || process.env.NODE_ENV !== "production";
+const dev = process.env.NODE_ENV !== "production";
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
 
@@ -17,13 +19,14 @@ nextApp
 		// Client side routing
 		app.get("/p/:permalink", async (req, res) => {
 			const { permalink } = req.params;
-			const hook = await Hook.findOne({ permalink }, { relations: ["hookRequests"] });
-			const hookRequestCount = hook.hookRequests.length;
+			const hook = await Hook.findOne({ permalink });
 			if (!hook) {
 				res.statusCode = 404;
 				return nextApp.render(req, res, "/_error", { ...req.query });
 			}
-			return nextApp.render(req, res, "/Hook", { hook, hookRequestCount });
+			const hostAddress = `http://${ip.address()}:${process.env.NODE_PORT}`;
+
+			return nextApp.render(req, res, "/Hook", { hook, hostAddress });
 		});
 
 		app.get("/", async (req, res) => {
